@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { db, sql } = require('../database/db2');
-
+const client = require('../database/db2')
 // get all usernames
 router.get('/getUsers', async (req, res) => {
     try {
-        const client = await db.connect();
-        const result = await client.sql`SELECT * FROM usernames`;
+
+        const result = await client.query(`SELECT * FROM usernames`);
         res.status(200).json({
             message: "Data fetched successfully",
             data: result,
@@ -24,8 +23,8 @@ router.get('/getUsers', async (req, res) => {
 router.post('/getIndividualUser', async (req, res) => {
     const username = req.body.username;
     try {
-        const client = await db.connect();
-        const result = await client.sql`SELECT * FROM usernames WHERE username=${username}`;
+
+        const result = await client.query(`SELECT * FROM usernames WHERE username=${username}`);
         res.status(200).json({
             message: "Data fetched successfully",
             data: result,
@@ -43,8 +42,8 @@ router.post('/getIndividualUser', async (req, res) => {
 router.post('/insertUsername', async (req, res) => {
     const username = req.body.username;
     try {
-        const client = await db.connect();
-        await client.sql`INSERT INTO usernames (username) VALUES (${username})`;
+
+        await client.query(`INSERT INTO usernames (username) VALUES (${username})`);
         res.status(200).json({
             message: "success",
         });
@@ -60,8 +59,7 @@ router.post('/insertUsername', async (req, res) => {
 router.post('/insertSubmissionToken', async (req, res) => {
     const { user_id, submission_token } = req.body;
     try {
-        const client = await db.connect();
-        await client.sql`INSERT INTO submissiontokens (user_id, submission_token) VALUES (${user_id}, ${submission_token})`;
+        await client.query(`INSERT INTO submissiontokens (user_id, submission_token) VALUES (${user_id}, ${submission_token})`);
         res.status(200).json({
             message: "success",
         });
@@ -77,13 +75,12 @@ router.post('/insertSubmissionToken', async (req, res) => {
 router.post('/fetchSubmissionByUserName', async (req, res) => {
     const { username } = req.body;
     try {
-        const client = await db.connect();
-        const result = await client.sql`
+
+        const result = await client.query(`
             SELECT st.submission_id, u.username, st.submission_token, st.submission_datetime
             FROM submissiontokens st
             JOIN usernames u ON st.user_id = u.user_id
-            WHERE u.username = ${username}
-        `;
+            WHERE u.username = ${username}`);
 
         res.status(200).json({
             message: "Submissions fetched successfully",

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 // const { client } = require('../database/db');
-const { client } = require('../database/db2');
+const { client } = require('../database/db');
 
 
 // get all usernames

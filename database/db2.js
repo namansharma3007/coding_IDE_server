@@ -1,7 +1,12 @@
-const { db, sql } = require('@vercel/postgres');
+const { Pool } = require('pg')
+ 
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+})
 
-const client = await db.connect();
+pool.connect((err) => {
+    if (err) throw err
+    console.log("Connect to PostgreSQL successfully!")
+})
 
-console.log("Connected to Vercel Postgres successfully!");
-
-module.exports = {client, sql};
+module.exports = pool
