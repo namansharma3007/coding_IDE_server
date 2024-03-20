@@ -23,11 +23,10 @@ router.get('/getUsers', async (req, res) => {
 router.post('/getIndividualUser', async (req, res) => {
     const username = req.body.username;
     try {
-
         const result = await client.query(`SELECT * FROM usernames WHERE username=${username}`);
         res.status(200).json({
             message: "Data fetched successfully",
-            data: result.rows,
+            data: result,
         });
     } catch (error) {
         console.error(error);
