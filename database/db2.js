@@ -8,5 +8,5 @@ pool.connect((err) => {
     if (err) throw err
     console.log("Connect to PostgreSQL successfully!")
 })
-
-module.exports = pool
+const client = poll;
+module.exports = {client}

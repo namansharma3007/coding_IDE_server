@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../database/db2')
+const {client} = require('../database/db2')
 // get all usernames
 router.get('/getUsers', async (req, res) => {
     try {
