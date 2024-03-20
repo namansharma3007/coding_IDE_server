@@ -27,7 +27,7 @@ router.post('/getIndividualUser', async (req, res) => {
         const result = await client.query(`SELECT * FROM usernames WHERE username=${username}`);
         res.status(200).json({
             message: "Data fetched successfully",
-            data: result,
+            data: result.rows,
         });
     } catch (error) {
         console.error(error);
@@ -84,7 +84,7 @@ router.post('/fetchSubmissionByUserName', async (req, res) => {
 
         res.status(200).json({
             message: "Submissions fetched successfully",
-            data: result,
+            data: result.rows,
         });
     } catch (error) {
         console.error(error);
