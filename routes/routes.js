@@ -1,19 +1,16 @@
 const express = require('express');
 const router = express.Router();
-// const { client } = require('../database/db');
-const { client } = require('../database/db');
-
-
+const {client} = require('../database/db')
 // get all usernames
 router.get('/getUsers', async (req, res) => {
     try {
-        const query = 'SELECT * FROM usernames';
-        const result = await client.query(query);
+        const result = await client.query(`SELECT * FROM usernames`);
         res.status(200).json({
             message: "Data fetched successfully",
             data: result.rows,
         });
     } catch (error) {
+        console.error(error);
         res.status(500).json({
             message: 'An error occurred while fetching data',
             data: null,
@@ -21,18 +18,17 @@ router.get('/getUsers', async (req, res) => {
     }
 });
 
-
-// get individualuserdetail
+// get individual user detail
 router.post('/getIndividualUser', async (req, res) => {
     const username = req.body.username;
     try {
-        const query = 'SELECT * FROM usernames where username=($1)';
-        const result = await client.query(query, [username]);
+        const result = await client.query(`SELECT * FROM usernames WHERE username='${username}'`);
         res.status(200).json({
             message: "Data fetched successfully",
             data: result.rows,
         });
     } catch (error) {
+        console.error(error);
         res.status(500).json({
             message: 'An error occurred while fetching data',
             data: null,
@@ -44,8 +40,8 @@ router.post('/getIndividualUser', async (req, res) => {
 router.post('/insertUsername', async (req, res) => {
     const username = req.body.username;
     try {
-        const query = 'INSERT INTO usernames (username) VALUES ($1)';
-        await client.query(query, [username]);
+
+        await client.query(`INSERT INTO usernames (username) VALUES ('${username}')`);
         res.status(200).json({
             message: "success",
         });
@@ -57,12 +53,11 @@ router.post('/insertUsername', async (req, res) => {
     }
 });
 
-// insert submissiontoken
+// insert submission token
 router.post('/insertSubmissionToken', async (req, res) => {
     const { user_id, submission_token } = req.body;
     try {
-        const query = 'INSERT INTO submissiontokens (user_id, submission_token) VALUES ($1, $2)';
-        await client.query(query, [user_id, submission_token]);
+        await client.query(`INSERT INTO submissiontokens (user_id, submission_token) VALUES (${user_id}, '${submission_token}')`);
         res.status(200).json({
             message: "success",
         });
@@ -74,18 +69,16 @@ router.post('/insertSubmissionToken', async (req, res) => {
     }
 });
 
-
-//fetch submissions by username
+// fetch submissions by username
 router.post('/fetchSubmissionByUserName', async (req, res) => {
     const { username } = req.body;
     try {
-        const query = `
+
+        const result = await client.query(`
             SELECT st.submission_id, u.username, st.submission_token, st.submission_datetime
             FROM submissiontokens st
             JOIN usernames u ON st.user_id = u.user_id
-            WHERE u.username = $1
-        `;
-        const result = await client.query(query, [username]);
+            WHERE u.username = '${username}'`);
 
         res.status(200).json({
             message: "Submissions fetched successfully",
@@ -99,7 +92,4 @@ router.post('/fetchSubmissionByUserName', async (req, res) => {
     }
 });
 
-
-
-//exporting router
 module.exports = router;
