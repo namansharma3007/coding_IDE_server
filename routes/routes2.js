@@ -26,7 +26,7 @@ router.post('/getIndividualUser', async (req, res) => {
         const result = await client.query(`SELECT * FROM usernames WHERE username='${username}'`);
         res.status(200).json({
             message: "Data fetched successfully",
-            data: result,
+            data: result.rows,
         });
     } catch (error) {
         console.error(error);
@@ -42,7 +42,7 @@ router.post('/insertUsername', async (req, res) => {
     const username = req.body.username;
     try {
 
-        await client.query(`INSERT INTO usernames (username) VALUES (${username})`);
+        await client.query(`INSERT INTO usernames (username) VALUES ('${username}')`);
         res.status(200).json({
             message: "success",
         });
@@ -58,7 +58,7 @@ router.post('/insertUsername', async (req, res) => {
 router.post('/insertSubmissionToken', async (req, res) => {
     const { user_id, submission_token } = req.body;
     try {
-        await client.query(`INSERT INTO submissiontokens (user_id, submission_token) VALUES (${user_id}, ${submission_token})`);
+        await client.query(`INSERT INTO submissiontokens (user_id, submission_token) VALUES (${user_id}, '${submission_token}')`);
         res.status(200).json({
             message: "success",
         });
@@ -79,7 +79,7 @@ router.post('/fetchSubmissionByUserName', async (req, res) => {
             SELECT st.submission_id, u.username, st.submission_token, st.submission_datetime
             FROM submissiontokens st
             JOIN usernames u ON st.user_id = u.user_id
-            WHERE u.username = ${username}`);
+            WHERE u.username = '${username}'`);
 
         res.status(200).json({
             message: "Submissions fetched successfully",
