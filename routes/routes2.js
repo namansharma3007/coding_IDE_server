@@ -8,7 +8,7 @@ router.get('/getUsers', async (req, res) => {
         const result = await client.query(`SELECT * FROM usernames`);
         res.status(200).json({
             message: "Data fetched successfully",
-            data: result,
+            data: result.data.rows,
         });
     } catch (error) {
         console.error(error);
